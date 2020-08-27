@@ -160,6 +160,7 @@ main = putStrLn $ show exampleProgram
 --
 -- Add the `Ident` fragment to `Imp1Sig`. Now `Imp1` is defined as
 -- a mixture of the language-specific fragments defined in this file, and the generic `Ident` fragment.
+-- You will need to change @iVar "x"@ into @iVar (iIdent "x")@ and similar.
 --
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
 -- (Copy its definition into this file to run.)
