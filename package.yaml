@@ -1,0 +1,73 @@
+name:                cubix-tutorial
+version:             0.5.0.0
+github:              "cubix-framework/cubix-tutorial"
+license:             BSD3
+author:              "James Koppel"
+maintainer:          "jkoppel@mit.edu"
+copyright:           "2020 James Koppel"
+
+extra-source-files:
+- README.md
+
+description: Exercises to accompany Cubix tutorial
+
+dependencies:
+- base >= 4.7 && < 5
+
+executables:
+  tut1:
+    main: Main.hs
+    source-dirs: tutorial/ex1
+    dependencies:
+    - base
+    - cubix
+  tut2:
+    main: Main.hs
+    source-dirs: tutorial/ex2
+    dependencies:
+    - base
+    - compstrat
+    - cubix
+  tut3:
+    main: Main.hs
+    source-dirs: tutorial/ex3
+    dependencies:
+    - base
+    - cubix
+  tut4:
+    main: Main.hs
+    source-dirs: tutorial/ex4
+    dependencies:
+    - base
+    - compstrat
+    - cubix
+    ghc-options:
+    - -freduction-depth=400
+  soln1:
+    main: Main.hs
+    source-dirs: solutions/ex1
+    dependencies:
+    - base
+    - cubix
+  soln2:
+    main: Main.hs
+    source-dirs: solutions/ex2
+    dependencies:
+    - base
+    - compstrat
+    - cubix
+  soln3:
+    main: Main.hs
+    source-dirs: solutions/ex3
+    dependencies:
+    - base
+    - cubix
+  soln4:
+    main: Main.hs
+    source-dirs: solutions/ex4
+    dependencies:
+    - base
+    - compstrat
+    - cubix
+    ghc-options:
+    - -freduction-depth=400
