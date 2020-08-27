@@ -200,6 +200,16 @@ type CanClearVariables fs = (All HTraversable fs, ExtractF [] (Term fs))
 -- Functions you'll need: `insertF`, `extractF`, `referencedIdents`, `makeClearVariableStatement`,
 -- and standard list functions.
 --
+-- `extractF` and `insertF` specialize to the following type signatures, useful here:
+--
+-- @
+-- extractF :: Term fs [BlockItemL] -> [Term fs BlockItemL]
+-- insertF  :: [Term fs BlockItemL] -> Term fs [BlockItemL]
+-- @
+--
+-- The type @Term fs [BlockItemL]@ means "term of sort 'list of block items'", while
+-- @[Term fs BlockItemL]@ means "list of terms of sort 'block item'".
+--
 -- HINT: Your function should pattern-match on `SimpleBlock`'s like this:
 --
 -- @
