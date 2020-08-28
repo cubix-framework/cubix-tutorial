@@ -75,6 +75,9 @@ data ExpL
 -- of things that can be included in blocks. This means
 -- that the definitions of @Statement@ and @Block@ are coupled.
 -- Later lessons will explain how to remove this coupling via sort injections.
+--
+-- Look up the definitions of `Block` and `Ident` in the docs for
+-- "Cubix.Language.Parametric.Syntax"
 data Statement e l where
   ImpAssign :: e IdentL -> e ExpL                     -> Statement e BlockItemL
   While     :: e ExpL -> e BlockItemL                 -> Statement e BlockItemL
