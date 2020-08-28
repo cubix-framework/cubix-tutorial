@@ -101,10 +101,10 @@ deriveAll [''IdentIsVar]
 -- createSortInclusionInfers ''IdentL  ''VarL
 -- @
 instance (IdentIsVar :-<: fs, All HFunctor fs) => InjF fs IdentL VarL where
-  -- injF :: Term fs VarL -> Term fs IdentL
+  -- injF :: Term fs IdentL -> Term fs VarL
   injF = iIdentIsVar
 
-  -- projF :: Term fs Identl -> Maybe (Term fs VarL)
+  -- projF :: Term fs VarL -> Maybe (Term fs IdentL)
   -- The auto-generated version would also define `projF'`, a variant
   -- of `projF` for labeled terms, which are only partially covered in
   -- this tutorial.
