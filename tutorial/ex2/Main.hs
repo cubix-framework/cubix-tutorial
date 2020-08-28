@@ -26,13 +26,9 @@ import Data.Comp.Multi.Strategy.Classification ( subterms )
 import Data.List ( nub )
 
 -- The root sorts of a few programming languages
---import Cubix.Language.C.Parametric.Common    ( CTranslationUnitL )
---import Cubix.Language.Java.Parametric.Common ( CompilationUnitL )
---import Cubix.Language.Lua.Parametric.Common  ( LBlockL )
-
-import Cubix.Language.C.Parametric.Common    ( CTranslationUnitL, iCConst, iCIntConst, pattern CInteger' )
-import Cubix.Language.Java.Parametric.Common ( CompilationUnitL, iLit, iNull )
-import Cubix.Language.Lua.Parametric.Common  ( LBlockL, iNil )
+import Cubix.Language.C.Parametric.Common    ( CTranslationUnitL )
+import Cubix.Language.Java.Parametric.Common ( CompilationUnitL )
+import Cubix.Language.Lua.Parametric.Common  ( LBlockL )
 
 ------------------------------------------------------------------------------
 
