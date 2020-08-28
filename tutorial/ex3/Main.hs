@@ -91,9 +91,10 @@ data IdentIsVar e l where
 
 deriveAll [''IdentIsVar]
 
--- | This instance is a sort injection: It establishes that `VarL` is a
--- __subsort__ of `IdentL`. This means that every term of sort `VarL` can be treated
--- as a term of sort `IdentL`. Or, in other words: there is an injective function
+-- | This instance is a sort injection: It establishes that `IdentL` is a
+-- __subsort__ of `VarL`. This means that every term of sort `Identl` can be treated
+-- as a term of sort `VarL`. Or, in other words: there is an injective function from
+-- language-generic identifiers to language-specific variables.
 --
 -- This definition is almost identical to the output of:
 --
