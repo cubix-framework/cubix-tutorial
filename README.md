@@ -5,6 +5,16 @@ These are the exercises accompanying the Cubix tutorial. They are found in the `
 * Exercise 3: Incremental parametric syntax: Expressing a language using a hybrid of language-specific and generic parts
 * Exercise 4: Language-parametric transformation: Writing a sanitization transformation that runs on C, Java, JavaScript, Lua, and Python
 
+## Getting started
+
+Open the documentation for `Cubix.Essentials`. This is a companion to this tutorial. It contains everything
+you will need to complete the exercises, organized in a tutorial form.
+
+For exercise 2 and later, you'll also want to open the documentation for `Cubix.Language.Parametric.Syntax`,
+which contains the generic nodes shared across language representations.
+
+Now, open up `tutorial/ex1/Main.hs` and start following along.
+
 
 ## To build:
 

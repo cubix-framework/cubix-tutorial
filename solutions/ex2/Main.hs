@@ -323,6 +323,22 @@ main = do putStrLn $ show $ addClearVariableStatements exampleImp2Program
 -- The generated code usually won't compile. It's okay. This is Exercise 2.
 --
 -- To write the instance, you'll need to learn a little bit about the language's syntax definition.
+-- Start off by chasing down the definition of that language's signature, which gives
+-- a list of all language fragments in that language.
+--
+-- E.g.: `MJavaSig` is defined
+--
+-- @
+-- type MJavaSig = '[Annotation, ArrayIndex, ArrayInit, ...]
+-- @
+--
+-- The language-specific nodes are given in alphabetical order at the beginning,
+-- and the language-generic nodes are given at the end.
+--
+-- Each language's AST definition is directly based on a that of a third-party library, which defines
+-- it as a traditional mutually-recursive algebraic data type. You may find these definitions
+-- easier to read that the Cubix modular definitions.
+--
 -- In each case, as each of these languages use the generic `Assign` node, you'll likely want to use the `iAssign
 -- smart constructor. You might notice that `Assign` nodes have sort `AssignL`, while `makeClearVariableStatement`
 -- must return a node of sort `BlockItemL`. However, `iAssign` will automatically create extra nodes to convert an
@@ -331,11 +347,10 @@ main = do putStrLn $ show $ addClearVariableStatements exampleImp2Program
 -- Other languages:
 --  * You can try the transformation on JavaScript too, but it may not behave the way you expect,
 --    as Cubix does not consider all sets of curly braces in JS to be "blocks,"
---    due to the way scopes work in JavaScript.
+--    due to the way scopes work in JavaScript. Similar is true of Python.
 --  * Lua, as discussed above, uses non-empty block-ends, so you'll get a type error if you
 --    try to run on Lua, because it is missing `EmptyBlockEnd`. But, with a small change to the
 --    transformation, you can remove this restriction. This is the bonus exercise below.
---  * Python does not have blocks, period, so you'll get a type error if you try to run it on Python.
 --
 
 exampleCProgram :: IO (Maybe (MCTerm CTranslationUnitL))
