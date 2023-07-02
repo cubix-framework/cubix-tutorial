@@ -244,8 +244,8 @@ sanitize prog = stripA <$> runConcurrentSupplyLabeler sanitizeInner
     sanitizeInner = do
       labeledProg <- annotateLabel prog
       let progInfo = makeProgInfo labeledProg
-      -- performCfgInsertions (Proxy :: Proxy BlockItemL) __TODO__ __TODO__ __TODO__
-      performCfgInsertions (Proxy :: Proxy BlockItemL)
+      -- performCfgInsertions @BlockItemL __TODO__ __TODO__ __TODO__
+      performCfgInsertions @BlockItemL
                            progInfo
                            (forEachFunctionArgument (insertSanitizeCall progInfo))
                            labeledProg
