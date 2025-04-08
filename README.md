@@ -1,4 +1,4 @@
-These are the exercises accompanying the Cubix tutorial. They are found in the `tutorial` folder.
+These are the exercises accompanying the Cubix tutorial ( http://www.cubix-framework.com/tutorial.html ). They are found in the `tutorial` folder.
 
 * Exercise 1: Language fragments: Creating a toy language using the style of representation used by Cubix
 * Exercise 2: Parametric syntax: Writing a small transformation that runs on multiple languages
