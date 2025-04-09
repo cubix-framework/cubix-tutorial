@@ -142,4 +142,5 @@ main = putStrLn $ show exampleProgram
 -- You will need to change @iVar "x"@ into @iVar (iIdent "x")@ and similar.
 --
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
--- (Copy its definition into this file to run.)
+-- (Copy its definition into this file to run. Note: It uses definitions from Data.Comp.Multi,
+--  but everything you need is re-exported from Cubix.Essentials.)

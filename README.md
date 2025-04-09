@@ -7,11 +7,11 @@ These are the exercises accompanying the Cubix tutorial ( http://www.cubix-frame
 
 ## Getting started
 
-Open the documentation for `Cubix.Essentials`. This is a companion to this tutorial. It contains everything
+It's recommended that you keep a tab open with the documentation for `Cubix.Essentials`, http://www.cubix-framework.com/doc/cubix-0.1.0.0/Cubix-Essentials.html . This is a companion to this tutorial. It contains everything
 you will need to complete the exercises, organized in a tutorial form.
 
 For exercise 2 and later, you'll also want to open the documentation for `Cubix.Language.Parametric.Syntax`,
-which contains the generic nodes shared across language representations.
+which contains the generic nodes shared across language representations. http://www.cubix-framework.com/doc/cubix-0.1.0.0/Cubix-Language-Parametric-Syntax.html
 
 Now, open up `tutorial/ex1/Main.hs` and start following along.
 
