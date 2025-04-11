@@ -14,6 +14,7 @@
 module Main where
 
 import Cubix.Essentials
+import Cubix.Language.Parametric.Syntax (IdentL)
 
 ------------------------------------------------------------------------------
 
@@ -162,5 +163,18 @@ main = putStrLn $ show exampleProgram
 -- a mixture of the language-specific fragments defined in this file, and the generic `Ident` fragment.
 -- You will need to change @iVar "x"@ into @iVar (iIdent "x")@ and similar.
 --
+
+
+-- Redefine VarRef with the new identifier type, calling it now VarRefB. ("B" stands for "Bonus exercise".)
+data VarRefB e l where
+  VarB      :: e IdentL            -> VarRefB e VarRefL
+  FieldRefB :: e VarRefL -> String -> VarRefB e VarRefL
+ 
+-- Redefine Imp1 as Imp1B.
+
+type Imp1BSig = '[VarRefB, Statement, Exp]
+
+type Imp1B = Term Imp1BSig
+
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
 -- (Copy its definition into this file to run.)
