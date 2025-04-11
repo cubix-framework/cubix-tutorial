@@ -339,10 +339,19 @@ main = do putStrLn $ show $ addClearVariableStatements exampleImp2Program
 -- it as a traditional mutually-recursive algebraic data type. You may find these definitions
 -- easier to read that the Cubix modular definitions.
 --
+-- Some convenience links for you:
+--    * https://hackage.haskell.org/package/language-c-0.10.0/docs/Language-C-Syntax-AST.html
+--    * https://hackage.haskell.org/package/language-java-0.2.9/docs/Language-Java-Syntax.html
+--
 -- In each case, as each of these languages use the generic `Assign` node, you'll likely want to use the `iAssign
 -- smart constructor. You might notice that `Assign` nodes have sort `AssignL`, while `makeClearVariableStatement`
 -- must return a node of sort `BlockItemL`. However, `iAssign` will automatically create extra nodes to convert an
 -- `Assign` node into a `BlockItemL`. This is part of the magic of sort injections.
+--
+-- Other tips:
+--
+-- * Import a language like this: `import qualified Cubix.Language.Java.Parametric.Common as J`. 
+--   Different syntaxes use similar or identical names for their own types and constructors
 --
 -- Other languages:
 --  * You can try the transformation on JavaScript too, but it may not behave the way you expect,
@@ -352,6 +361,11 @@ main = do putStrLn $ show $ addClearVariableStatements exampleImp2Program
 --    try to run on Lua, because it is missing `EmptyBlockEnd`. But, with a small change to the
 --    transformation, you can remove this restriction. This is the bonus exercise below.
 --
+-- Documentation for the underlying JavaScript and Python grammars:
+-- 
+--    * https://hackage.haskell.org/package/language-javascript-0.7.1.0/docs/Language-JavaScript-Parser-AST.html
+--        -- Note: language-javascript has definitions full of JSAnnot fields. The Cubix version of the syntax removes these.
+--    * https://hackage.haskell.org/package/language-python-0.5.8/docs/Language-Python-Common-AST.html
 
 exampleCProgram :: IO (Maybe (MCTerm CTranslationUnitL))
 exampleCProgram = parseFile @MCSig "input-files/c/Foo.c"
@@ -369,6 +383,10 @@ instance MakeClearVariableStatement MJavaSig where
 
 -- | BONUS: Generalize `addClearVariableStatementsBlock` and `CanClearVariables`
 --   to be agnostic to kind of BlockEnd in the language. Then get the transformation to run on Lua.
+--
+--   Documentation for underlying Lua grammar:
+--    * https://hackage.haskell.org/package/language-lua-0.11.0.2/docs/Language-Lua-Syntax.html
+
 
 exampleLuaProgram :: IO (Maybe (MLuaTerm LBlockL))
 exampleLuaProgram = parseFile @MLuaSig "input-files/lua/Foo.lua"
