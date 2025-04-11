@@ -4,7 +4,8 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TemplateHaskell       #-}
-
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE ViewPatterns          #-}
 
 -- | Cubix tutorial: Exercise 1
 --
@@ -14,8 +15,8 @@
 module Main where
 
 import Cubix.Essentials
-import Cubix.Language.Parametric.Syntax (IdentL)
-
+import Cubix.Language.Parametric.Syntax (IdentL, Ident(..), iIdent)
+import Data.Comp.Multi ( HFunctor, (:-<:), All )
 ------------------------------------------------------------------------------
 
 __TODO__ :: a
@@ -169,7 +170,9 @@ main = putStrLn $ show exampleProgram
 data VarRefB e l where
   VarB      :: e IdentL            -> VarRefB e VarRefL
   FieldRefB :: e VarRefL -> String -> VarRefB e VarRefL
- 
+
+deriveAll [''VarRefB]
+
 -- Redefine Imp1 as Imp1B.
 
 type Imp1BSig = '[VarRefB, Statement, Exp]
@@ -178,3 +181,19 @@ type Imp1B = Term Imp1BSig
 
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
 -- (Copy its definition into this file to run.)
+-- Need to import Data.Comp.Multi and add cubix-compdata to the dependencies for this module.
+
+vandalize :: (Ident :-<: fs, All HFunctor fs) => Term fs l -> Term fs l
+vandalize t = transform vandalizeInner t
+  where
+    vandalizeInner :: (Ident :-<: fs, All HFunctor fs) => Term fs l -> Term fs l
+    vandalizeInner (project -> Just (Ident s)) = iIdent (s ++ "_vandalized")
+    vandalizeInner t                           = t
+
+exampleProgramB :: Imp1B StatementL
+exampleProgramB = iAssign (iVar $ iIdent "x") (iMul (iIntExp 1) (iIntExp 1))
+                 `iSeq`
+                 iAssign (iVar $ iIdent "y") (iVarExp (iVar $ iIdent "x"))
+
+vandalizedExample :: Imp1B StatementL
+vandalizedExample =  vandalize exampleProgram
