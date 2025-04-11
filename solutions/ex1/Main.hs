@@ -14,9 +14,9 @@
 
 module Main where
 
-import Cubix.Essentials hiding (Term, transform, project)
-import Cubix.Language.Parametric.Syntax hiding (iAssign, iIdent)
-import Data.Comp.Multi
+import Cubix.Essentials
+import Cubix.Language.Parametric.Syntax hiding (iAssign)
+
 ------------------------------------------------------------------------------
 
 __TODO__ :: a
@@ -126,11 +126,6 @@ exampleProgram = iAssign (iVar "x") (iMul (iIntExp 1) (iIntExp 1))
                  `iSeq`
                  iAssign (iVar "y") (iVarExp (iVar "x"))
 
-main :: IO ()
-main = do
-  putStrLn $ show exampleProgram
-  putStrLn $ show vandalizedExample
-
 
 -- | Let's talk more about smart constructors
 --
@@ -167,23 +162,27 @@ main = do
 -- You will need to change @iVar "x"@ into @iVar (iIdent "x")@ and similar.
 --
 
-
--- Redefine VarRef with the new identifier type, calling it now VarRefB. ("B" stands for "Bonus exercise".)
+-- Redefine the VarRef sort using the new identifier type.
+-- The new sort is VarRefB. ("B" stands for "Bonus exercise".)
 data VarRefB e l where
-  VarB      :: e IdentL            -> VarRefB e VarRefL
-  FieldRefB :: e VarRefL -> String -> VarRefB e VarRefL
+  VarB      :: e IdentL              -> VarRefB e VarRefL
+  FieldRefB :: e VarRefL -> e IdentL -> VarRefB e VarRefL
 
 deriveAll [''VarRefB]
 
 -- Redefine Imp1 as Imp1B.
 
-type Imp1BSig = '[VarRefB, Statement, Exp]
+type Imp1BSig = '[VarRefB, Statement, Exp, Ident]
 
 type Imp1B = Term Imp1BSig
 
+-- Test that we can declare variables using smart constructors.
+
+-- Old variable.
 x :: Imp1 VarRefL
 x = iVar "x"
 
+-- New variable.
 xB :: Imp1B VarRefL
 xB = iVarB $  iIdent "x"
 
@@ -205,3 +204,8 @@ exampleProgramB =  iAssign (iVarB $  iIdent "x") (iMul (iIntExp 1) (iIntExp 1))
 
 vandalizedExample :: Imp1B StatementL
 vandalizedExample =  vandalize exampleProgramB
+
+main :: IO ()
+main = do
+  putStrLn $ show exampleProgram
+  putStrLn $ show vandalizedExample

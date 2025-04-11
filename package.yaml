@@ -49,7 +49,6 @@ executables:
     dependencies:
     - base
     - cubix
-    - cubix-compdata
   soln2:
     main: Main.hs
     source-dirs: solutions/ex2
