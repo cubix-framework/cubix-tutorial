@@ -14,9 +14,9 @@
 
 module Main where
 
-import Cubix.Essentials
-import Cubix.Language.Parametric.Syntax hiding (iAssign)
-import qualified Cubix.Language.Parametric.Syntax as S
+import Cubix.Essentials hiding (Term, transform, project)
+import Cubix.Language.Parametric.Syntax hiding (iAssign, iIdent)
+import Data.Comp.Multi
 ------------------------------------------------------------------------------
 
 __TODO__ :: a
@@ -127,7 +127,9 @@ exampleProgram = iAssign (iVar "x") (iMul (iIntExp 1) (iIntExp 1))
                  iAssign (iVar "y") (iVarExp (iVar "x"))
 
 main :: IO ()
-main = putStrLn $ show exampleProgram
+main = do
+  putStrLn $ show exampleProgram
+  putStrLn $ show vandalizedExample
 
 
 -- | Let's talk more about smart constructors
@@ -179,6 +181,12 @@ type Imp1BSig = '[VarRefB, Statement, Exp]
 
 type Imp1B = Term Imp1BSig
 
+x :: Imp1 VarRefL
+x = iVar "x"
+
+xB :: Imp1B VarRefL
+xB = iVarB $  iIdent "x"
+
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
 -- (Copy its definition into this file to run.)
 -- Need to import Data.Comp.Multi and add cubix-compdata to the dependencies for this module.
@@ -187,13 +195,13 @@ vandalize :: (Ident :-<: fs, All HFunctor fs) => Term fs l -> Term fs l
 vandalize t = transform vandalizeInner t
   where
     vandalizeInner :: (Ident :-<: fs, All HFunctor fs) => Term fs l -> Term fs l
-    vandalizeInner (project -> Just (Ident s)) = iIdent (s ++ "_vandalized")
+    vandalizeInner (project -> Just (Ident s)) =  iIdent (s ++ "_vandalized")
     vandalizeInner t                           = t
 
 exampleProgramB :: Imp1B StatementL
-exampleProgramB =  iAssign (iVarB $ iIdent "x") (iMul (iIntExp 1) (iIntExp 1))
+exampleProgramB =  iAssign (iVarB $  iIdent "x") (iMul (iIntExp 1) (iIntExp 1))
                  `iSeq`
-                   iAssign (iVarB $ iIdent "y") (iVarExp (iVarB $ iIdent "x"))
+                   iAssign (iVarB $  iIdent "y") (iVarExp (iVarB $  iIdent "x"))
 
 vandalizedExample :: Imp1B StatementL
 vandalizedExample =  vandalize exampleProgramB
