@@ -15,8 +15,8 @@
 module Main where
 
 import Cubix.Essentials
-import Cubix.Language.Parametric.Syntax (IdentL, Ident(..), iIdent)
-import Data.Comp.Multi ( HFunctor, (:-<:), All )
+import Cubix.Language.Parametric.Syntax hiding (iAssign)
+import qualified Cubix.Language.Parametric.Syntax as S
 ------------------------------------------------------------------------------
 
 __TODO__ :: a
@@ -191,9 +191,9 @@ vandalize t = transform vandalizeInner t
     vandalizeInner t                           = t
 
 exampleProgramB :: Imp1B StatementL
-exampleProgramB = iAssign (iVar $ iIdent "x") (iMul (iIntExp 1) (iIntExp 1))
+exampleProgramB =  iAssign (iVarB $ iIdent "x") (iMul (iIntExp 1) (iIntExp 1))
                  `iSeq`
-                 iAssign (iVar $ iIdent "y") (iVarExp (iVar $ iIdent "x"))
+                   iAssign (iVarB $ iIdent "y") (iVarExp (iVarB $ iIdent "x"))
 
 vandalizedExample :: Imp1B StatementL
-vandalizedExample =  vandalize exampleProgram
+vandalizedExample =  vandalize exampleProgramB
