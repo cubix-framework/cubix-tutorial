@@ -4,7 +4,8 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TemplateHaskell       #-}
-
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE ViewPatterns          #-}
 
 -- | Cubix tutorial: Exercise 1
 --
@@ -14,6 +15,7 @@
 module Main where
 
 import Cubix.Essentials
+import Cubix.Language.Parametric.Syntax hiding (iAssign)
 
 ------------------------------------------------------------------------------
 
@@ -124,9 +126,6 @@ exampleProgram = iAssign (iVar "x") (iMul (iIntExp 1) (iIntExp 1))
                  `iSeq`
                  iAssign (iVar "y") (iVarExp (iVar "x"))
 
-main :: IO ()
-main = putStrLn $ show exampleProgram
-
 
 -- | Let's talk more about smart constructors
 --
@@ -162,5 +161,47 @@ main = putStrLn $ show exampleProgram
 -- a mixture of the language-specific fragments defined in this file, and the generic `Ident` fragment.
 -- You will need to change @iVar "x"@ into @iVar (iIdent "x")@ and similar.
 --
+
+-- Redefine the VarRef fragment using the new identifier type.
+-- The new fragment is VarRefB. ("B" stands for "Bonus exercise".)
+-- The old code will still work. We may reuse the `VarRefL` sort.
+data VarRefB e l where
+  VarB      :: e IdentL              -> VarRefB e VarRefL
+  FieldRefB :: e VarRefL -> e IdentL -> VarRefB e VarRefL
+
+deriveAll [''VarRefB]
+
+-- Redefine Imp1 as Imp1B using the new fragment instead of VarRef. Also include the Ident fragment.
+
+type Imp1BSig = '[VarRefB, Statement, Exp, Ident]
+
+type Imp1B = Term Imp1BSig
+
+-- Test that we can declare variables in Imp1B using smart constructors.
+xB :: Imp1B VarRefL
+xB = iVarB $ iIdent "x"
+
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
 -- (Copy its definition into this file to run.)
+
+vandalize :: (Ident :-<: fs, All HFunctor fs) => Term fs l -> Term fs l
+vandalize t = transform vandalizeInner t
+  where
+    vandalizeInner :: (Ident :-<: fs, All HFunctor fs) => Term fs l -> Term fs l
+    vandalizeInner (project -> Just (Ident s)) =  iIdent (s ++ "_vandalized")
+    vandalizeInner t                           = t
+
+exampleProgramB :: Imp1B StatementL
+exampleProgramB =  iAssign (iVarB $  iIdent "x") (iMul (iIntExp 1) (iIntExp 1))
+                 `iSeq`
+                   iAssign (iVarB $  iIdent "y") (iVarExp (iVarB $  iIdent "x"))
+
+vandalizedExample :: Imp1B StatementL
+vandalizedExample =  vandalize exampleProgramB
+
+-- The `main` code must be placed after deriving the new Imp1B language fragments,
+-- or else `vandalize` cannot be compiled (as it depends on Template Haskell generated code for Imp1B).
+main :: IO ()
+main = do
+  putStrLn $ show exampleProgram
+  putStrLn $ show vandalizedExample
