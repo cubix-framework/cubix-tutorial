@@ -199,6 +199,8 @@ exampleProgramB =  iAssign (iVarB $  iIdent "x") (iMul (iIntExp 1) (iIntExp 1))
 vandalizedExample :: Imp1B StatementL
 vandalizedExample =  vandalize exampleProgramB
 
+-- The `main` code must be placed after deriving the new Imp1B language fragments,
+-- or else `vandalize` cannot be compiled (as it depends on Template Haskell generated code for Imp1B).
 main :: IO ()
 main = do
   putStrLn $ show exampleProgram
