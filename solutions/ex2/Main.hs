@@ -10,6 +10,7 @@
 {-# LANGUAGE TypeApplications      #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE TypeSynonymInstances  #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 -- | Cubix tutorial: Exercise 2
 --
@@ -25,7 +26,7 @@ import Cubix.Language.Parametric.Syntax
 import Data.Comp.Multi.Strategy.Classification ( subterms )
 import Data.List ( nub )
 
--- The root sorts of a few programming languages
+-- The root sorts of a few programming languages are available as `RootSort fs` and are defined as:
 --import Cubix.Language.C.Parametric.Common    ( CTranslationUnitL )
 --import Cubix.Language.Java.Parametric.Common ( CompilationUnitL )
 --import Cubix.Language.Lua.Parametric.Common  ( LBlockL )
@@ -303,9 +304,10 @@ main = do putStrLn $ show $ addClearVariableStatements exampleImp2Program
 
           Just cProg    <- exampleCProgram
           Just javaProg <- exampleJavaProgram
-
+          Just luaProg <- exampleLuaProgram
           putStrLn $ pretty $ addClearVariableStatements cProg
           putStrLn $ pretty $ addClearVariableStatements javaProg
+          putStrLn $ pretty $ addClearVariableStatementsGen luaProg
 
 -- | PART 5
 --
@@ -390,3 +392,65 @@ instance MakeClearVariableStatement MJavaSig where
 
 exampleLuaProgram :: IO (Maybe (MLuaTerm LBlockL))
 exampleLuaProgram = parseFile @MLuaSig "input-files/lua/Foo.lua"
+
+-- Hints about supporting Lua:
+-- Create a new typeclass that says that `fs` can make Block from BlockItems somehow, not necessarily via SimpleBlock,
+-- and allowing the user to specify a non-standard "block end" term.
+-- Use UndecidableInstances as there are too many constraints.
+
+class (Block :-<: fs, All HFunctor fs) => CanMakeBlockFromItems fs where
+  makeBlockFromItems :: Term fs [BlockItemL] -> Term fs BlockEndL -> Term fs BlockL
+
+type CanClearVariablesGen fs =
+  ( All HTraversable fs,
+    ExtractF [] (Term fs),
+    All HFoldable fs,
+    All HFunctor fs,
+    Ident :-<: fs,
+    DynCase (Term fs) IdentL, -- for referencedIdents
+    MakeClearVariableStatement fs,
+    InsertF [] (Term fs),
+    Block :-<: fs,
+    CanMakeBlockFromItems fs
+  )
+
+-- Define versions of addClearVariableStatement* functions but with support of general BlockEnd terms.
+
+addClearVariableStatementsBlockGen :: (CanClearVariablesGen fs) => Term fs BlockL -> Term fs BlockL
+addClearVariableStatementsBlockGen (Block' items blockEnd) = makeBlockFromItems result blockEnd
+    where  -- Note: Block' destructures a term of sort BlockL into existing items and a BlockEndL term.
+           -- We need to keep the BlockEnd term at the end of the block when we insert more items at the end.
+           -- The job of makeBlockFromItems is to insert items while keeping the given BlockEnd term.
+      -- items :: Term fs [BlockItemL]
+      -- blockEnd :: Term fs BlockEndL
+      -- extracted :: [ Term fs BlockItemL ]
+      extracted = extractF items
+      -- variables :: [String]
+      variables = concatMap referencedIdents extracted                         
+      -- clearingStatements :: [Term fs BlockItemL]
+      clearingStatements = fmap makeClearVariableStatement variables
+      -- allStatements :: [Term fs BlockItemL]
+      allStatements = extracted ++ clearingStatements
+      -- result :: Term fs [BlockItemL]
+      result = insertF allStatements
+  
+
+instance {-# OVERLAPPABLE #-} (EmptyBlockEnd :-<: fs, Block :-<: fs, All HFunctor fs) => CanMakeBlockFromItems fs where
+  makeBlockFromItems items _ = SimpleBlock items -- Ignore blockEnd for all languages other than Lua.
+
+instance {-# OVERLAPPING #-} CanMakeBlockFromItems MLuaSig where
+  makeBlockFromItems items blockEnd = Block' items blockEnd  -- We can just use the existing Block' magic.
+
+addClearVariableStatementsAnyGen :: (CanClearVariablesGen fs) => Term fs l -> Term fs l
+addClearVariableStatementsAnyGen t = case project t of -- Attempt to cast @t@ into a node of the `Block` fragment
+  -- \| In this branch, it's known statically that @l@ is @BlockL@.
+  --   This makes it possible to use a function that returns a @BlockL@
+  Just b@(Block _ _) -> addClearVariableStatementsBlockGen (inject b)
+  -- \| Branch for things that are not a block
+  Nothing -> t
+
+addClearVariableStatementsGen :: (CanClearVariablesGen fs) => Term fs l -> Term fs l
+addClearVariableStatementsGen = transform addClearVariableStatementsAnyGen
+
+instance MakeClearVariableStatement MLuaSig where
+  makeClearVariableStatement name = iAssign (iIdent name) iAssignOpEquals iNil -- This `iNil` comes from Lua.
