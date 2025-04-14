@@ -162,15 +162,16 @@ exampleProgram = iAssign (iVar "x") (iMul (iIntExp 1) (iIntExp 1))
 -- You will need to change @iVar "x"@ into @iVar (iIdent "x")@ and similar.
 --
 
--- Redefine the VarRef sort using the new identifier type.
--- The new sort is VarRefB. ("B" stands for "Bonus exercise".)
+-- Redefine the VarRef fragment using the new identifier type.
+-- The new fragment is VarRefB. ("B" stands for "Bonus exercise".)
+-- The old code will still work. We may reuse the `VarRefL` sort.
 data VarRefB e l where
   VarB      :: e IdentL              -> VarRefB e VarRefL
   FieldRefB :: e VarRefL -> e IdentL -> VarRefB e VarRefL
 
 deriveAll [''VarRefB]
 
--- Redefine Imp1 as Imp1B.
+-- Redefine Imp1 as Imp1B using the new fragment instead of VarRef.
 
 type Imp1BSig = '[VarRefB, Statement, Exp, Ident]
 
@@ -188,7 +189,6 @@ xB = iVarB $  iIdent "x"
 
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
 -- (Copy its definition into this file to run.)
--- Need to import Data.Comp.Multi and add cubix-compdata to the dependencies for this module.
 
 vandalize :: (Ident :-<: fs, All HFunctor fs) => Term fs l -> Term fs l
 vandalize t = transform vandalizeInner t
