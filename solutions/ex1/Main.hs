@@ -171,21 +171,15 @@ data VarRefB e l where
 
 deriveAll [''VarRefB]
 
--- Redefine Imp1 as Imp1B using the new fragment instead of VarRef.
+-- Redefine Imp1 as Imp1B using the new fragment instead of VarRef. Also include the Ident fragment.
 
 type Imp1BSig = '[VarRefB, Statement, Exp, Ident]
 
 type Imp1B = Term Imp1BSig
 
--- Test that we can declare variables using smart constructors.
-
--- Old variable.
-x :: Imp1 VarRefL
-x = iVar "x"
-
--- New variable.
+-- Test that we can declare variables in Imp1B using smart constructors.
 xB :: Imp1B VarRefL
-xB = iVarB $  iIdent "x"
+xB = iVarB $ iIdent "x"
 
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
 -- (Copy its definition into this file to run.)
