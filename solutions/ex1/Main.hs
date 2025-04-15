@@ -182,7 +182,8 @@ xB :: Imp1B VarRefL
 xB = iVarB $ iIdent "x"
 
 -- You can now run the `vandalize` transformation from the cubix-sample-app on your language!
--- (Copy its definition into this file to run.)
+-- (Copy its definition into this file to run. Note: It uses definitions from Data.Comp.Multi,
+--  but everything you need is re-exported from Cubix.Essentials.)
 
 vandalize :: (Ident :-<: fs, All HFunctor fs) => Term fs l -> Term fs l
 vandalize t = transform vandalizeInner t

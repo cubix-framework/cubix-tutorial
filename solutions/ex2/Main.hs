@@ -118,8 +118,17 @@ deriveAll [''Statement, ''Exp]
 -- Specifically: Lua does not have a general "return" statement; they can only
 -- syntactically appear as a block end.
 pattern SimpleBlock :: (Block :-<: fs, EmptyBlockEnd :-<: fs, All HFunctor fs)
-                    => Term fs [BlockItemL] -> Term fs BlockL
-pattern SimpleBlock items = Block' items EmptyBlockEnd'
+                    => Term fs [BlockItemL] -- A single node representing a list of block items.Applicative
+                                            -- Use @insertF [someBlockItem]@ to construct.
+                                            -- This expands into @ConsF' someBlockItem NilF'@,
+                                            -- from the ListF fragment (see below)
+                    -> Term fs BlockL        
+pattern SimpleBlock items = Block' items EmptyBlockEnd' -- This is your first time seeing a Cubix pattern synonym.
+                                                        -- @Block' x y@ has type @(Block :-<: fs) => Term fs BlockL@,
+                                                        -- a term of sort Block in any language that includes the generic Block fragment.
+                                                        -- It's similar to @iBlock x y@, and can also be used as a pattern.
+                                                        -- See interlude SMART_CONSTRUCTOR_DETAILS from later in the tutorial
+                                                        -- for more details.
 
 
 -- | In order to support lists of block items,
@@ -159,6 +168,12 @@ type Imp2 = Term Imp2Sig
 -- specific part of this variable-clearing transformation.
 --
 -- YOUR TASK: Create an instance of this typeclass for `Imp2Sig`
+--
+-- Comprehension question: Why is this class parameterized on the signature/node type `fs`?
+--                         What would happen if you tried to instead parameterized it on the
+--                         general node type (i.e.: write instances like
+--                         `instance MakeClearVariableStatement (Term fs)`)
+--                         or the sorted node type `Term fs BlockItemL`?
 class MakeClearVariableStatement fs where
   makeClearVariableStatement :: String -> Term fs BlockItemL
 
