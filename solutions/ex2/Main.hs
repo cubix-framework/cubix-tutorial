@@ -409,23 +409,25 @@ exampleLuaProgram = parseFile @MLuaSig "input-files/lua/Foo.lua"
 -- Hints about supporting Lua:
 -- Create a new typeclass that says that `fs` can make Block from BlockItems somehow, not necessarily via SimpleBlock,
 -- and allowing the user to specify a non-standard "block end" term.
--- Use UndecidableInstances as there are too many constraints.
+-- Use UndecidableInstances because the constraints are too complicated.
 
 class (Block :-<: fs, All HFunctor fs) => CanMakeBlockFromItems fs where
   makeBlockFromItems :: Term fs [BlockItemL] -> Term fs BlockEndL -> Term fs BlockL
 
-type CanClearVariablesGen fs =
-  ( All HTraversable fs,
-    ExtractF [] (Term fs),
-    All HFoldable fs,
-    All HFunctor fs,
-    Ident :-<: fs,
-    DynCase (Term fs) IdentL, -- for referencedIdents
-    MakeClearVariableStatement fs,
-    InsertF [] (Term fs),
-    Block :-<: fs,
-    CanMakeBlockFromItems fs
-  )
+type CanClearVariablesGen fs = ( All HTraversable fs
+                            , All HFoldable    fs
+                            , All HFunctor     fs
+
+                            , Ident         :-<: fs
+                            , Block         :-<: fs
+
+                            , DynCase (Term fs) IdentL
+                            , CanMakeBlockFromItems fs
+                            , MakeClearVariableStatement fs
+
+                            , ExtractF [] (Term fs)
+                            , InsertF  [] (Term fs)
+                            )
 
 -- Define versions of addClearVariableStatement* functions but with support of general BlockEnd terms.
 
