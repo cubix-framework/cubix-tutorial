@@ -29,6 +29,7 @@ import Data.List ( nub )
 import Cubix.Language.C.Parametric.Common    ( CTranslationUnitL )
 import Cubix.Language.Java.Parametric.Common ( CompilationUnitL )
 import Cubix.Language.Lua.Parametric.Common  ( LBlockL )
+import qualified Control.Applicative as items
 
 ------------------------------------------------------------------------------
 
@@ -114,8 +115,18 @@ deriveAll [''Statement, ''Exp]
 -- Specifically: Lua does not have a general "return" statement; they can only
 -- syntactically appear as a block end.
 pattern SimpleBlock :: (Block :-<: fs, EmptyBlockEnd :-<: fs, All HFunctor fs)
-                    => Term fs [BlockItemL] -> Term fs BlockL
-pattern SimpleBlock items = Block' items EmptyBlockEnd'
+                    => Term fs [BlockItemL] -- A single node representing a list of block items.Applicative
+                                            -- Use @insertF [someBlockItem]@ to construct.
+                                            -- This expands into @ConsF' someBlockItem NilF'@,
+                                            -- from the ListF fragment (see below)
+                    -> Term fs BlockL        
+pattern SimpleBlock items = Block' items EmptyBlockEnd' -- This is your first time seeing a Cubix pattern synonym.
+                                                        -- @Block' x y@ has type @(Block :-<: fs) => Term fs BlockL@,
+                                                        -- a term of sort Block in any language that includes the generic Block fragment.
+                                                        -- It's similar to @iBlock x y@, and can also be used as a pattern.
+                                                        -- See interlude SMART_CONSTRUCTOR_DETAILS from later in the tutorial
+                                                        -- for more details.
+
 
 
 -- | In order to support lists of block items,
