@@ -165,8 +165,8 @@ exampleMImp_Version1Program = iImpAssign (iIdent "x") iNilExp
 -- with those names and the accompanying sorts such as `LhsL` and `AssignOpL`.
 
 -- | PART 2a
--- Figure out what sort injections you'll need to replace instances of the `ImpAssign` node
--- with instances of the generic `Assign` node. Use `createSortInclusionType` to 
+-- Your goal is to replace instances of the `ImpAssign` node by the generic `Assign` node.
+-- Figure out what new sort injections are needed for that to become possible. Use `createSortInclusionType` to 
 -- generate sort injection nodes witnessing these sort injections. Then do the same
 -- to allow generic `Block` nodes to replace Imp3-specific `BlockStmt` nodes.
 --
