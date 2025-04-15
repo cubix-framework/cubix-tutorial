@@ -241,7 +241,6 @@ type CanClearVariables fs = ( All HTraversable fs
 -- @
 
 addClearVariableStatementsBlock :: (CanClearVariables fs) => Term fs BlockL -> Term fs BlockL
---addClearVariableStatementsBlock = __TODO__
 addClearVariableStatementsBlock (SimpleBlock items) = SimpleBlock (insertF $ extractF items ++ clearStatements)
   where
     clearStatements = map makeClearVariableStatement $ referencedIdents items
@@ -271,7 +270,6 @@ addClearVariableStatementsAny t = case project t of -- Attempt to cast @t@ into 
 --
 -- Look in the "Cubix.Essentials" documentation for appropriate traversal functions.
 addClearVariableStatements :: (CanClearVariables fs) => Term fs l -> Term fs l
---addClearVariableStatements = __TODO__a
 addClearVariableStatements = transform addClearVariableStatementsAny
 
 -- | When you're done, you can try running your transformation
