@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 25412794f98259523f82375435753b2d75ea3ebeb61d9501ee9d18c2fd45e14f
+-- hash: 4e0d21217b7c870d4f919a81f5a4a5d1276ecb596328dd452a284e821b8b7d16
 
 name:           cubix-tutorial
 version:        0.5.0.0
@@ -98,7 +98,6 @@ executable tut2
 executable tut3
   main-is: Main.hs
   other-modules:
-      Main1
       Paths_cubix_tutorial
   hs-source-dirs:
       tutorial/ex3
