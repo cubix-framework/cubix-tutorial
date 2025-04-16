@@ -118,7 +118,7 @@ deriveAll [''Statement, ''Exp]
 -- Specifically: Lua does not have a general "return" statement; they can only
 -- syntactically appear as a block end.
 pattern SimpleBlock :: (Block :-<: fs, EmptyBlockEnd :-<: fs, All HFunctor fs)
-                    => Term fs [BlockItemL] -- A single node representing a list of block items.Applicative
+                    => Term fs [BlockItemL] -- A single node representing a list of block items.
                                             -- Use @insertF [someBlockItem]@ to construct.
                                             -- This expands into @ConsF' someBlockItem NilF'@,
                                             -- from the ListF fragment (see below)

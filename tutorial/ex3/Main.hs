@@ -165,14 +165,15 @@ type MImp3Sig_Version1 = '[Var, Statement, Exp]
 -- with those names and the accompanying sorts such as `LhsL` and `AssignOpL`.
 
 -- | PART 2a
--- Figure out what sort injections you'll need to replace instances of the `ImpAssign` node
--- with instances of the generic `Assign` node. Use `createSortInclusionType` to 
--- generate sort injection nodes witnessing these sort injections. Then do the same
--- to allow generic `Block` nodes to replace Imp3-specific `BlockStmt` nodes.
+-- Your goal is to replace instances of the `ImpAssign` node by the generic `Assign` node.
+-- Figure out what sort injections are needed for that to become possible.
+-- Use `createSortInclusionType` to  generate sort injection nodes witnessing these sort injections.
+-- 
+-- Then do the same to allow generic `Block` nodes to replace Imp3-specific `BlockStmt` nodes.
 --
 -- You will need to (1) create sort injections from
 -- Imp3-specific sorts to the sorts of the children of these nodes (e.g.: `Lhs`, `BlockItemL`),
--- and (2) create sort injections from the sorts of the generic nodes to Imp3-specific sorts.
+-- and (2) create sort injections from the sorts of the generci nodes to Imp3-specific sorts.
 --
 -- Don't forget to `deriveAll` for these generated nodes.
 -- To reference generated nodes: Know that they have names like "Sort1IsSort2"

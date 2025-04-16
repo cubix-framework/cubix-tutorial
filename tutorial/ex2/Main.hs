@@ -29,7 +29,6 @@ import Data.List ( nub )
 import Cubix.Language.C.Parametric.Common    ( CTranslationUnitL )
 import Cubix.Language.Java.Parametric.Common ( CompilationUnitL )
 import Cubix.Language.Lua.Parametric.Common  ( LBlockL )
-import qualified Control.Applicative as items
 
 ------------------------------------------------------------------------------
 
@@ -115,7 +114,7 @@ deriveAll [''Statement, ''Exp]
 -- Specifically: Lua does not have a general "return" statement; they can only
 -- syntactically appear as a block end.
 pattern SimpleBlock :: (Block :-<: fs, EmptyBlockEnd :-<: fs, All HFunctor fs)
-                    => Term fs [BlockItemL] -- A single node representing a list of block items.Applicative
+                    => Term fs [BlockItemL] -- A single node representing a list of block items.
                                             -- Use @insertF [someBlockItem]@ to construct.
                                             -- This expands into @ConsF' someBlockItem NilF'@,
                                             -- from the ListF fragment (see below)
