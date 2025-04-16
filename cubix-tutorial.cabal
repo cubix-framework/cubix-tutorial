@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cede67c151182ac50fb2b23b655da1d48d5a19405db55773d1a2607a2e426eca
+-- hash: 25412794f98259523f82375435753b2d75ea3ebeb61d9501ee9d18c2fd45e14f
 
 name:           cubix-tutorial
 version:        0.5.0.0
@@ -55,6 +55,7 @@ executable soln3
       solutions/ex3
   build-depends:
       base
+    , compstrat
     , cubix
   default-language: Haskell2010
 
@@ -97,11 +98,13 @@ executable tut2
 executable tut3
   main-is: Main.hs
   other-modules:
+      Main1
       Paths_cubix_tutorial
   hs-source-dirs:
       tutorial/ex3
   build-depends:
       base
+    , compstrat
     , cubix
   default-language: Haskell2010
 
