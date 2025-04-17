@@ -140,9 +140,6 @@ type MImp3Sig_Version1 = '[Statement, Exp, Ident, IdentIsVar]
 exampleMImp_Version1Program :: Term MImp3Sig_Version1 StatementL
 exampleMImp_Version1Program = iImpAssign (iIdent "x") iNilExp
 
---- Question: Why is `ListF` not part of the signature? The language seems to require List nodes
--- because of the constructor `BlockStmt :: e [StatementL] -> Statement e StatementL`.
-
 -- | INTERLUDE 1: SMART_CONSTRUCTOR_DETAILS
 --
 -- We now explain the real signature of smart constructors
@@ -171,9 +168,8 @@ exampleMImp_Version1Program = iImpAssign (iIdent "x") iNilExp
 
 -- | PART 2
 --
--- We now complete the replacement of language-specific with generic nodes.
+-- We now complete the replacement of language-specific nodes with generic nodes.
 --
--- First, you'll need to familiarize yourself
 -- Head over to the documentation in "Cubix.Language.Parametric.Syntax" and familiarize
 -- yourself with the `Assign` and `Block` fragments. This includes both the nodes
 -- with those names and the accompanying sorts such as `LhsL` and `AssignOpL`.
@@ -215,22 +211,6 @@ createSortInclusionInfer ''BlockL     ''StatementL
 createSortInclusionInfer ''VarL    ''LhsL
 createSortInclusionInfer ''ExpL    ''RhsL
 createSortInclusionInfer ''AssignL ''StatementL
-
---- Question: why is it enough to just convert AssignL to StatementL as sorts?
--- An `Assign` constructor has more data than a `Statement` constructor.
--- A `Block` constructor has more data than a `BlockStmt` constructor.
--- I am assuming that the Template-generated code will automatically omit unnecessary data when converting an `Assign` to a `Statement`?
-
--- The task was described as "replace instances of the `ImpAssign` node by the generic `Assign` node".
--- Comparing the constructors:
-
--- ImpAssign :: e VarL -> e ExpL -> Statement e StatementL
--- Assign :: e LhsL -> e AssignOpL -> e RhsL -> Assign e AssignL
-
--- I expected that I will have to write code converting `Assign` to `ImpAssign` by omitting unnecessary data.
--- But it was never necessary to write such code. Maybe I'm confused about how the generated code works?
-
--- BTW when I ran stack build with the dump-slices option, I couldn't find answers to this question by looking at the generated code.
 
 
 -- | PART 2c
@@ -384,12 +364,10 @@ main = do
 
 
 -- In order to apply `getAssignmentsInBlock` to whole programs, we need to find all subterms of sort BlockL
--- at any level below the root node of a program. This is done by `getBlockInProgram`.
+--   at any level below the root node of a program. This is done by `getBlocksInProgram`.
 -- The code is similar to `referencedIdents` from Exercise 2.
 -- Need to add dependency on "compstrat" to package.yaml, this dependency already exists in some other exercises.
--- And need to import Data.Comp.Multi.Strategy.Classification (subterms) for this.
+-- Also, import Data.Comp.Multi.Strategy.Classification (subterms) and Data.List (nub) as in Exercise 2.
 getBlocksInProgram :: (All HFoldable fs, All HFunctor fs, All EqHF fs, Block :-<: fs, DynCase (Term fs) BlockL) =>
     Term fs l -> [Term fs BlockL]
 getBlocksInProgram t = nub $ map (\(Block' s e) -> Block' s e) $ subterms t
-
---- Question: is this the approach you expected me to take?
