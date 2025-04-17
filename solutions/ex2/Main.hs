@@ -25,7 +25,7 @@ import Cubix.Language.Parametric.Syntax
 import Data.Comp.Multi.Strategy.Classification ( subterms )
 import Data.List ( nub )
 
--- The root sorts of a few programming languages
+-- The root sorts of a few programming languages are available as `RootSort fs` and are defined as:
 --import Cubix.Language.C.Parametric.Common    ( CTranslationUnitL )
 --import Cubix.Language.Java.Parametric.Common ( CompilationUnitL )
 --import Cubix.Language.Lua.Parametric.Common  ( LBlockL )
@@ -255,7 +255,6 @@ type CanClearVariables fs = ( All HTraversable fs
 -- @
 
 addClearVariableStatementsBlock :: (CanClearVariables fs) => Term fs BlockL -> Term fs BlockL
---addClearVariableStatementsBlock = __TODO__
 addClearVariableStatementsBlock (SimpleBlock items) = SimpleBlock (insertF $ extractF items ++ clearStatements)
   where
     clearStatements = map makeClearVariableStatement $ referencedIdents items
@@ -285,7 +284,6 @@ addClearVariableStatementsAny t = case project t of -- Attempt to cast @t@ into 
 --
 -- Look in the "Cubix.Essentials" documentation for appropriate traversal functions.
 addClearVariableStatements :: (CanClearVariables fs) => Term fs l -> Term fs l
---addClearVariableStatements = __TODO__a
 addClearVariableStatements = transform addClearVariableStatementsAny
 
 -- | When you're done, you can try running your transformation
@@ -313,14 +311,14 @@ exampleImp2Program = SimpleBlock $ insertF [
                      ]
 
 main :: IO ()
---main = putStrLn $ show $ addClearVariableStatements exampleImp2Program
 main = do putStrLn $ show $ addClearVariableStatements exampleImp2Program
 
           Just cProg    <- exampleCProgram
           Just javaProg <- exampleJavaProgram
-
+          Just luaProg <- exampleLuaProgram
           putStrLn $ pretty $ addClearVariableStatements cProg
           putStrLn $ pretty $ addClearVariableStatements javaProg
+          putStrLn $ pretty $ addClearVariableStatementsGen luaProg
 
 -- | PART 5
 --
@@ -405,3 +403,43 @@ instance MakeClearVariableStatement MJavaSig where
 
 exampleLuaProgram :: IO (Maybe (MLuaTerm LBlockL))
 exampleLuaProgram = parseFile @MLuaSig "input-files/lua/Foo.lua"
+
+-- Hints about supporting Lua:
+-- Remove the requirement to have EmptyBlockEnd.
+-- Use Block' to create BlockItems, instead of SimpleBlock. Preserve the BlockEndL values.
+
+
+instance MakeClearVariableStatement MLuaSig where
+  makeClearVariableStatement name = iAssign (iIdent name) iAssignOpEquals iNil -- This `iNil` comes from Lua.
+
+type CanClearVariablesGen fs = ( All HTraversable fs
+                            , All HFoldable    fs
+                            , All HFunctor     fs
+
+                            , Ident         :-<: fs
+                            , Block         :-<: fs
+
+                            , DynCase (Term fs) IdentL
+                            , MakeClearVariableStatement fs
+
+                            , ExtractF [] (Term fs)
+                            , InsertF  [] (Term fs)
+                            )
+
+-- Define versions of addClearVariableStatement* functions but with support of general BlockEnd terms.
+
+addClearVariableStatementsBlockGen :: (CanClearVariablesGen fs) => Term fs BlockL -> Term fs BlockL
+addClearVariableStatementsBlockGen (Block' items blockEnd) = Block' (insertF $ extractF items ++ clearStatements) blockEnd
+  where
+    clearStatements = map makeClearVariableStatement $ referencedIdents items
+
+addClearVariableStatementsAnyGen :: (CanClearVariablesGen fs) => Term fs l -> Term fs l
+addClearVariableStatementsAnyGen t = case project t of -- Attempt to cast @t@ into a node of the `Block` fragment
+  -- \| In this branch, it's known statically that @l@ is @BlockL@.
+  --   This makes it possible to use a function that returns a @BlockL@
+  Just b@(Block _ _) -> addClearVariableStatementsBlockGen (inject b)
+  -- \| Branch for things that are not a block
+  Nothing -> t
+
+addClearVariableStatementsGen :: (CanClearVariablesGen fs) => Term fs l -> Term fs l
+addClearVariableStatementsGen = transform addClearVariableStatementsAnyGen
