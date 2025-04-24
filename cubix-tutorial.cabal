@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 210b702d8c5fcb3d723fd97f554c4f78384476f653ab2719bd6e8ca84a88df04
+-- hash: aae82ef3decf649b206b8493ab6c15bab8581178116c6780821a225f24c0b9ba
 
 name:           cubix-tutorial
 version:        0.5.1.0
@@ -30,9 +30,13 @@ executable soln1
       Paths_cubix_tutorial
   hs-source-dirs:
       solutions/ex1
+  default-extensions:
+      PatternSynonyms
+      ViewPatterns
   build-depends:
       base
     , cubix
+    , template-haskell
   default-language: Haskell2010
 
 executable soln2
@@ -41,10 +45,14 @@ executable soln2
       Paths_cubix_tutorial
   hs-source-dirs:
       solutions/ex2
+  default-extensions:
+      PatternSynonyms
+      ViewPatterns
   build-depends:
       base
     , compstrat
     , cubix
+    , template-haskell
   default-language: Haskell2010
 
 executable soln3
@@ -53,9 +61,13 @@ executable soln3
       Paths_cubix_tutorial
   hs-source-dirs:
       solutions/ex3
+  default-extensions:
+      PatternSynonyms
+      ViewPatterns
   build-depends:
       base
     , cubix
+    , template-haskell
   default-language: Haskell2010
 
 executable soln4
@@ -64,11 +76,15 @@ executable soln4
       Paths_cubix_tutorial
   hs-source-dirs:
       solutions/ex4
+  default-extensions:
+      PatternSynonyms
+      ViewPatterns
   ghc-options: -freduction-depth=400
   build-depends:
       base
     , compstrat
     , cubix
+    , template-haskell
   default-language: Haskell2010
 
 executable tut1
@@ -77,9 +93,13 @@ executable tut1
       Paths_cubix_tutorial
   hs-source-dirs:
       tutorial/ex1
+  default-extensions:
+      PatternSynonyms
+      ViewPatterns
   build-depends:
       base
     , cubix
+    , template-haskell
   default-language: Haskell2010
 
 executable tut2
@@ -88,10 +108,14 @@ executable tut2
       Paths_cubix_tutorial
   hs-source-dirs:
       tutorial/ex2
+  default-extensions:
+      PatternSynonyms
+      ViewPatterns
   build-depends:
       base
     , compstrat
     , cubix
+    , template-haskell
   default-language: Haskell2010
 
 executable tut3
@@ -100,9 +124,13 @@ executable tut3
       Paths_cubix_tutorial
   hs-source-dirs:
       tutorial/ex3
+  default-extensions:
+      PatternSynonyms
+      ViewPatterns
   build-depends:
       base
     , cubix
+    , template-haskell
   default-language: Haskell2010
 
 executable tut4
@@ -111,9 +139,13 @@ executable tut4
       Paths_cubix_tutorial
   hs-source-dirs:
       tutorial/ex4
+  default-extensions:
+      PatternSynonyms
+      ViewPatterns
   ghc-options: -freduction-depth=400
   build-depends:
       base
     , compstrat
     , cubix
+    , template-haskell
   default-language: Haskell2010

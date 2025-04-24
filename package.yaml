@@ -11,8 +11,13 @@ extra-source-files:
 
 description: Exercises to accompany Cubix tutorial
 
+default-extensions:
+  - PatternSynonyms
+  - ViewPatterns
+
 dependencies:
 - base >= 4.7 && < 5
+- template-haskell
 
 executables:
   tut1:
