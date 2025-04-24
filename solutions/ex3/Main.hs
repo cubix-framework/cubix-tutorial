@@ -9,6 +9,7 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE TypeSynonymInstances  #-}
 {-# LANGUAGE ViewPatterns          #-}
+{-# LANGUAGE PatternSynonyms       #-}
 
 -- | Cubix tutorial: Exercise 3
 --

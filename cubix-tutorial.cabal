@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cede67c151182ac50fb2b23b655da1d48d5a19405db55773d1a2607a2e426eca
+-- hash: 210b702d8c5fcb3d723fd97f554c4f78384476f653ab2719bd6e8ca84a88df04
 
 name:           cubix-tutorial
-version:        0.5.0.0
+version:        0.5.1.0
 description:    Exercises to accompany Cubix tutorial
 homepage:       https://github.com/cubix-framework/cubix-tutorial#readme
 bug-reports:    https://github.com/cubix-framework/cubix-tutorial/issues
