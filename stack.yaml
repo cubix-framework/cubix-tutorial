@@ -5,12 +5,12 @@ packages:
 
 extra-deps:
 - language-lua-0.11.0.2
-- git: git@github.com:jkoppel/language-javascript.git
+- git: https://github.com/jkoppel/language-javascript.git
   commit: 516f52b13870fa7d99b0503a0730438f07891340
 - language-dot-0.1.2
-- git: git@github.com:jkoppel/language-c.git
+- git: https://github.com/jkoppel/language-c.git
   commit: 9a496ea8da36742ab3c4ca7769f072f8f6091deb
-- git: git@github.com:jkoppel/language-java.git
+- git: https://github.com/jkoppel/language-java.git
   commit: 31de71c063d8586d6d69f49fbc55030f7e865593
 - git: https://github.com/jkoppel/language-python.git
   commit: 4ef1ba415badfb58e043bef543d9d9857ab0f2cc
