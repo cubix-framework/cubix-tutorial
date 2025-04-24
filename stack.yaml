@@ -21,7 +21,7 @@ extra-deps:
 - alex-tools-0.6.1
 - git: https://github.com/jkoppel/solidity-hs
   commit: ed56714c994693e7458ad5f5b02d6bb1c53fe435
-- git: git@github.com:jkoppel/cubix.git
+- git: https://github.com/jkoppel/cubix.git
   commit: 8e692ef47d6b1a3c7a3038415c946c389983d7a1
   subdirs:
   - .
