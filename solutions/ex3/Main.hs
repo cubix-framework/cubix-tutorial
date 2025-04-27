@@ -9,6 +9,7 @@
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE TypeSynonymInstances  #-}
 {-# LANGUAGE ViewPatterns          #-}
+{-# LANGUAGE TypeApplications      #-}
 
 -- | Cubix tutorial: Exercise 3
 --
@@ -25,12 +26,23 @@ module Main where
 import Cubix.Essentials
 import Cubix.Language.Parametric.Syntax
 
+import Cubix.ParsePretty
+
 -- | We'll be deriving some sort injections in this exercise
 import Cubix.Language.Parametric.Derive ( createSortInclusionType, createSortInclusionInfer )
 
 -- | For demonstration, we create one InjF node manually. We need to include another definition for it.
 import Cubix.Language.Parametric.InjF ( projF' )
 
+
+import Data.Comp.Multi.Strategy.Classification (subterms)
+import Data.List (nub)
+
+-- Root sorts for different languages (same as `RootSort fs`).
+import Cubix.Language.C.Parametric.Common (CTranslationUnitL)
+import Cubix.Language.Java.Parametric.Common (CompilationUnitL)
+import Cubix.Language.JavaScript.Parametric.Common (JSASTL)
+import Cubix.Language.Lua.Parametric.Common (LBlockL)
 ------------------------------------------------------------------------------
 
 __TODO__ :: a
@@ -128,7 +140,6 @@ type MImp3Sig_Version1 = '[Statement, Exp, Ident, IdentIsVar]
 exampleMImp_Version1Program :: Term MImp3Sig_Version1 StatementL
 exampleMImp_Version1Program = iImpAssign (iIdent "x") iNilExp
 
-
 -- | INTERLUDE 1: SMART_CONSTRUCTOR_DETAILS
 --
 -- We now explain the real signature of smart constructors
@@ -157,9 +168,8 @@ exampleMImp_Version1Program = iImpAssign (iIdent "x") iNilExp
 
 -- | PART 2
 --
--- We now complete the replacement of language-specific with generic nodes.
+-- We now complete the replacement of language-specific nodes with generic nodes.
 --
--- First, you'll need to familiarize yourself
 -- Head over to the documentation in "Cubix.Language.Parametric.Syntax" and familiarize
 -- yourself with the `Assign` and `Block` fragments. This includes both the nodes
 -- with those names and the accompanying sorts such as `LhsL` and `AssignOpL`.
@@ -323,9 +333,41 @@ exampleImp3Program = iBlock (insertF [
                             EmptyBlockEnd'
 
 
-
-main :: IO ()
-main = putStrLn $ show $ getAssignmentsInBlock exampleImp3Program
-
 -- | BONUS: Try actually running `getAssignmentsInBlock` on programs in C, Java, JavaScript, and Lua.
 -- Look at Part 5 of Exercise 2 as a guide.
+
+exampleCProgram :: IO (Maybe (MCTerm CTranslationUnitL))
+exampleCProgram = parseFile @MCSig "input-files/c/Foo.c"
+
+exampleJavaProgram :: IO (Maybe (MJavaTerm CompilationUnitL))
+exampleJavaProgram = parseFile @MJavaSig "input-files/java/Foo.java"
+
+exampleJavaScriptProgram :: IO (Maybe (MJSTerm JSASTL))
+exampleJavaScriptProgram = parseFile @MJSSig "input-files/javascript/Foo.js"
+
+exampleLuaProgram :: IO (Maybe (MLuaTerm LBlockL))
+exampleLuaProgram = parseFile @MLuaSig "input-files/lua/Foo.lua"
+
+main :: IO ()
+main = do
+  putStrLn $ show $ getAssignmentsInBlock exampleImp3Program
+
+  Just cProgram <- exampleCProgram
+  Just luaProgram <- exampleLuaProgram
+  Just javaProgram <- exampleJavaProgram
+  Just jsProgram <- exampleJavaScriptProgram
+
+  print $ concatMap getAssignmentsInBlock $ getBlocksInProgram cProgram
+  print $ concatMap getAssignmentsInBlock $ getBlocksInProgram luaProgram
+  print $ concatMap getAssignmentsInBlock $ getBlocksInProgram javaProgram
+  print $ concatMap getAssignmentsInBlock $ getBlocksInProgram jsProgram
+
+
+-- In order to apply `getAssignmentsInBlock` to whole programs, we need to find all subterms of sort BlockL
+--   at any level below the root node of a program. This is done by `getBlocksInProgram`.
+-- The code is similar to `referencedIdents` from Exercise 2.
+-- Need to add dependency on "compstrat" to package.yaml, this dependency already exists in some other exercises.
+-- Also, import Data.Comp.Multi.Strategy.Classification (subterms) and Data.List (nub) as in Exercise 2.
+getBlocksInProgram :: (All HFoldable fs, All HFunctor fs, All EqHF fs, Block :-<: fs, DynCase (Term fs) BlockL) =>
+    Term fs l -> [Term fs BlockL]
+getBlocksInProgram t = nub $ map (\(Block' s e) -> Block' s e) $ subterms t

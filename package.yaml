@@ -38,6 +38,7 @@ executables:
     source-dirs: tutorial/ex3
     dependencies:
     - base
+    - compstrat
     - cubix
   tut4:
     main: Main.hs
@@ -66,6 +67,7 @@ executables:
     source-dirs: solutions/ex3
     dependencies:
     - base
+    - compstrat
     - cubix
   soln4:
     main: Main.hs
